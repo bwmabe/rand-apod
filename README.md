@@ -8,6 +8,14 @@ outputs a string in the form of
 <image link>
 ```
 
+# usage
+
+can be called from command line 
+```
+$ ./randapod.py
+```
+or as a module
+
 example output
 
 ```
