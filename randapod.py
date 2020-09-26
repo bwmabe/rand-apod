@@ -28,7 +28,7 @@ def random():
         year = randint(95, 99)
 
     if year == current_year:
-        month = randint(1, current_year)
+        month = randint(1, current_month)
     else:
         month = randint(1, 12)
 
