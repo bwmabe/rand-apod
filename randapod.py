@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Randapod: Returns a random NASA APOD URL
+# (c) 2019 - 2021 bwmabe
 
 import requests
 import math
@@ -7,6 +9,9 @@ from random import randint
 from datetime import datetime, timezone
 
 
+# Returns a URL to an APOD page from between June 20th 1995 and today
+#
+# @return the afore mentioned URL
 def random_url():
     # The first date that picture were posted to APOD continuously
     # June 20th, 1995
@@ -20,6 +25,10 @@ def random_url():
                       .strftime("%y%m%d"))
 
 
+# Retrives a page and checks that retrieval was okay
+#
+# @param a URI that points to an APOD page
+# @return the contents of an APOD page
 def get_page(url):
     try:
         page = requests.get(url)
@@ -34,13 +43,10 @@ def get_page(url):
         exit(0)
 
 
-def process_page(page):
-    soup = BeautifulSoup(page, 'html.parser')
-    title = soup.title.string
-    image = soup.find_all("img")[0]['src']
-    return(title, "https://apod.nasa.gov/apod/{}".format(image))
-
-
+# Extracts the <title> and an <img> element.
+# On APOD pages; the Picture of the Day is the only <img> element
+#
+# @return a tuple containing page title and a URI to the image
 def randapod():
     page = BeautifulSoup(get_page(random_url()), 'html.parser')
     title = page.title.string
