@@ -5,25 +5,16 @@ from bs4 import BeautifulSoup
 from random import randint
 from datetime import datetime
 
-#           ja  fe mr  ap  ma  jn  jl  au  sp  oc  no  de
-max_days = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-base_url = 'https://apod.nasa.gov/apod/ap{:0>2d}{:0>2d}{:0>2d}.html'
-
-date = datetime.now()
-
-current_year = int(date.strftime("%y"))
-current_day = int(date.strftime("%d"))
-current_month = int(date.strftime("%m"))
-
-
-def to_str(data):
-    if data < 10:
-        return "0" + str(data)
-    else:
-        return str(data)
-
 
 def random_url():
+    #           ja  fe mr  ap  ma  jn  jl  au  sp  oc  no  de
+    max_days = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    base_url = 'https://apod.nasa.gov/apod/ap{:0>2d}{:0>2d}{:0>2d}.html'
+    date = datetime.now()
+    current_year = int(date.strftime("%y"))
+    current_day = int(date.strftime("%d"))
+    current_month = int(date.strftime("%m"))
+
     if randint(0, 100) > 25:
         year = randint(0, current_year)
     else:
@@ -64,11 +55,8 @@ def get_page(url):
 
 def process_page(page):
     soup = BeautifulSoup(page, 'html.parser')
-
     title = soup.title.string
-
     image = soup.find_all("img")[0]['src']
-
     return(title, "https://apod.nasa.gov/apod/{}".format(image))
 
 
