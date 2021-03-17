@@ -1,42 +1,23 @@
 #!/usr/bin/env python3
 
 import requests
+import math
 from bs4 import BeautifulSoup
 from random import randint
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def random_url():
-    #           ja  fe mr  ap  ma  jn  jl  au  sp  oc  no  de
-    max_days = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    base_url = 'https://apod.nasa.gov/apod/ap{:0>2d}{:0>2d}{:0>2d}.html'
-    date = datetime.now()
-    current_year = int(date.strftime("%y"))
-    current_day = int(date.strftime("%d"))
-    current_month = int(date.strftime("%m"))
-
-    if randint(0, 100) > 25:
-        year = randint(0, current_year)
-    else:
-        year = randint(95, 99)
-
-    if year == current_year:
-        month = randint(1, current_month)
-    else:
-        month = randint(1, 12)
-
-    if month == current_month:
-        day = randint(1, current_day)
-    else:
-        if month != 2:
-            day = randint(1, max_days[month - 1])
-        else:
-            if (year % 4) == 0:
-                day = randint(1, 29)
-            else:
-                day = randint(1, 28)
-
-    return base_url.format(year, month, day)
+    # The first date that picture were posted to APOD continuously
+    # June 20th, 1995
+    first_date = 803620800
+    now = math.floor(datetime.now()
+                     .replace(tzinfo=timezone.utc)
+                     .timestamp())
+    url = 'https://apod.nasa.gov/apod/ap{}.html'
+    return url.format(datetime
+                      .fromtimestamp(randint(first_date, now))
+                      .strftime("%y%m%d"))
 
 
 def get_page(url):
