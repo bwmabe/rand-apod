@@ -3,11 +3,12 @@
 # (c) 2019 - 2021 bwmabe
 
 import requests
-import math
 import sys
 import aiohttp
 import asyncio
+
 from bs4 import BeautifulSoup
+from math import floor
 from random import randint
 from datetime import datetime, timezone
 
@@ -17,11 +18,12 @@ from datetime import datetime, timezone
 # @return the afore mentioned URL
 def random_url():
     # The first date that picture were posted to APOD continuously
-    # June 20th, 1995
+    # June 20th, 1995; converted to a Unix timestamp
     first_date = 803620800
-    now = math.floor(datetime.now()
-                     .replace(tzinfo=timezone.utc)
-                     .timestamp())
+    now = floor(datetime.now()
+                .replace(tzinfo=timezone.utc)
+                .timestamp())
+    # APOD pages are all named 'apYYMMDD.html'
     url = 'https://apod.nasa.gov/apod/ap{}.html'
     return url.format(datetime
                       .fromtimestamp(randint(first_date, now))
@@ -78,9 +80,10 @@ async def randapod_async():
     return(title, "https://apod.nasa.gov/apod/{}".format(image))
 
 
+# For running from the command line and testing
 if __name__ == '__main__':
     if len(sys.argv) >= 1:
-        if sys.argv[1] == "async" or sys.argv[1] == "-a":
+        if sys.argv[1] == "async" or sys.argv[1] == "-a" or sys.argv[1] == "a":
             r = asyncio.run(randapod_async())
         else:
             print("Unknown argument")
