@@ -4,6 +4,9 @@
 
 import requests
 import math
+import sys
+import aiohttp
+import asyncio
 from bs4 import BeautifulSoup
 from random import randint
 from datetime import datetime, timezone
@@ -43,6 +46,16 @@ def get_page(url):
         exit(0)
 
 
+# Retrives a page and checks that retrieval was okay, asynchronously
+#
+# @param a URI that points to an APOD page
+# @return the contents of an APOD page
+async def get_page_async(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+
 # Extracts the <title> and an <img> element.
 # On APOD pages; the Picture of the Day is the only <img> element
 #
@@ -54,6 +67,24 @@ def randapod():
     return(title, "https://apod.nasa.gov/apod/{}".format(image))
 
 
+# Extracts the <title> and an <img> element, asynchronously
+# On APOD pages; the Picture of the Day is the only <img> element
+#
+# @return a tuple containing page title and a URI to the image
+async def randapod_async():
+    page = BeautifulSoup(await get_page_async(random_url()), 'html.parser')
+    title = page.title.string
+    image = page.find_all("img")[0]['src']
+    return(title, "https://apod.nasa.gov/apod/{}".format(image))
+
+
 if __name__ == '__main__':
-    r = randapod()
+    if len(sys.argv) >= 1:
+        if sys.argv[1] == "async" or sys.argv[1] == "-a":
+            r = asyncio.run(randapod_async())
+        else:
+            print("Unknown argument")
+            exit(1)
+    else:
+        r = randapod()
     print("Title: %s \nURL: %s" % r)
